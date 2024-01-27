@@ -1,0 +1,203 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "API HTTPServer for Infotecs EWallet Test Task",
+        "title": "Infotecs EWallet API",
+        "contact": {},
+        "version": "1.0"
+    },
+    "host": "localhost:8080",
+    "basePath": "/api/v1",
+    "paths": {
+        "/wallet": {
+            "post": {
+                "description": "create a new wallet",
+                "tags": [
+                    "wallet"
+                ],
+                "summary": "Create Wallet",
+                "operationId": "create-wallet",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/wallet.CreateWalletResponse"
+                        }
+                    },
+                    "507": {
+                        "description": "Failed to store new wallet"
+                    }
+                }
+            }
+        },
+        "/wallet/{walletId}": {
+            "get": {
+                "description": "get wallet",
+                "tags": [
+                    "wallet"
+                ],
+                "summary": "Get Wallet",
+                "operationId": "get-wallet",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "wallet id",
+                        "name": "walletId",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/wallet.GetWalletResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "404": {
+                        "description": "Wallet Not Found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/wallet/{walletId}/history": {
+            "get": {
+                "description": "get transactions history",
+                "tags": [
+                    "transaction"
+                ],
+                "summary": "Get History",
+                "operationId": "get-transactions",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "wallet id",
+                        "name": "walletId",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/wallet.TransactionResponse"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "404": {
+                        "description": "Wallet Not Found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/wallet/{walletId}/send": {
+            "post": {
+                "description": "transfer money from one wallet to another",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "wallet | transaction"
+                ],
+                "summary": "Transfer Money",
+                "operationId": "transfer-money",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "wallet id",
+                        "name": "walletId",
+                        "in": "path"
+                    },
+                    {
+                        "description": "receiving wallet info",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/wallet.SendRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Money Transfered Successfully"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "404": {
+                        "description": "Sending Wallet Not Found"
+                    },
+                    "507": {
+                        "description": "Failed To Store New Transaction"
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "wallet.CreateWalletResponse": {
+            "type": "object",
+            "properties": {
+                "balance": {
+                    "type": "number"
+                },
+                "id": {
+                    "type": "string"
+                }
+            }
+        },
+        "wallet.GetWalletResponse": {
+            "type": "object",
+            "properties": {
+                "balance": {
+                    "type": "number"
+                },
+                "id": {
+                    "type": "string"
+                }
+            }
+        },
+        "wallet.SendRequest": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "type": "number"
+                },
+                "to": {
+                    "type": "string"
+                }
+            }
+        },
+        "wallet.TransactionResponse": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "type": "number"
+                },
+                "from": {
+                    "type": "string"
+                },
+                "time": {
+                    "type": "string"
+                },
+                "to": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}
